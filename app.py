@@ -30,10 +30,7 @@ def load_data():
     # previews
     first2 = df.head(5)
     last2 = df.tail(5)
-    print(f"Preview:\n{first2}\n...\n{last2}")
-
     columns_list = df.columns.to_list()
-
     dtypes = df.dtypes.tolist()
 
     print(df.info())
@@ -53,3 +50,10 @@ def load_data():
 
     # convert dtype
     df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
+
+    # engineer feature
+    df['TotalPrice'] = df['Quantity'] * df['UnitPrice']
+
+    return df, first2, last2, columns_list, dtypes
+
+df, f2, l2, cols, dtypes = load_data()
