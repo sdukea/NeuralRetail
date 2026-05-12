@@ -57,3 +57,17 @@ def load_data():
     return df, first2, last2, columns_list, dtypes
 
 df, f2, l2, cols, dtypes = load_data()
+
+# sidebar; filters
+
+st.sidebar.header('Filters')
+
+country = st.sidebar.multiselect(
+    "Select country", df['Country'].unique(),
+    default=df['Country'].unique()
+)
+
+# df['Country'].unique() -> chooses all countries without repetition; unique
+# default=... -> sets the default multi-selected options as all of these unique countries
+
+# KPIs
