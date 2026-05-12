@@ -11,8 +11,14 @@ st.title('NeuralRetail – AI sales intelligence')
 # data loading
 
 # without caching, every UI interaction, every rerun and every filter change would
-# reload the excel file
+# reload the excel file; app becomes slow
+"""
+First run:
+Load Excel → store result
 
+Next runs:
+Reuse stored result
+"""
 # caching stores processed dataframe in memory
 
 @st.cache_data
@@ -32,4 +38,18 @@ def load_data():
 
     print(df.info())
 
-    
+    # data cleaning
+
+    # remove missing customers
+    df.dropna(subset=['CustomerID'])
+
+    # mask; quantity
+    true_rows_q = df['Quantity'] > 0    
+    df = df.loc[true_rows_q]
+
+    # mask; unit price 
+    true_rows_p = df['UnitPrice'] > 0
+    df = df.loc[true_rows_p]
+
+    # convert dtype
+    df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
