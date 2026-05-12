@@ -1,0 +1,69 @@
+NeuralRetail provides AI sales intelligence for FMCG clients and e-commerce.
+
+In a sentence: an AI-powered retail intelligence dashboard.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+– Datasets:
+Online Retail Dataset (UCI Official)
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+– It does 5 major things:
+1. Data cleaning; makes raw retail data usable
+2. Analytics dashboard; shows KPIs and trends
+3. Customer segmentation; groups customers by behaviour
+4. Demand forecasting; predicts future sales
+5. Churn analysis; detects inactive customers
+
+Kind of like a mini version of software used by companies like Shopify, Amazon and Salesforce.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+– Project architecture:
+    RAW DATA
+    ↓
+    DATA CLEANING
+    ↓
+    FEATURE ENGINEERING
+    ↓
+    ANALYTICS + ML
+    ↓
+    VISUALIZATION
+    ↓
+    BUSINESS DECISIONS
+
+More specifically;
+
+1.Data Layer
+2.Feature Engineering
+- Create features like:
+a. RFM
+b. Lag Features
+c. Rolling Averages
+3.Model Layer
+- Train models
+- Store Models(MLflow)
+4.Serving Layer
+- FastAPI, Flask
+- Streamlit(Dashboard)
+5.Monitoring Layer
+- Drift Detection
+- Performance Tracking
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+– Workflow:
+1. Collect the dataset
+2. Import the libraries
+3. Load the dataset
+4. Data Cleaning
+5. Feature Engineering
+6. EDA
+7. Customer Segmentation(RFM Analysis)
+8. Demand Forecasting(Time series)
+9. Churn Prediction
+10. Inventory Optimization
+11. Build Streamlit/PowerBI Dashboard
+12. Deploy using Flask/fastapi/Streamlit
+
