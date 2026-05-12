@@ -23,14 +23,13 @@ def load_data():
 
     # previews
     first2 = df.head(5)
-
     last2 = df.tail(5)
-
     print(f"Preview:\n{first2}\n...\n{last2}")
 
     columns_list = df.columns.to_list()
 
-    print(f"Columns: {columns_list}")
+    dtypes = df.dtypes.tolist()
 
+    print(df.info())
 
     
