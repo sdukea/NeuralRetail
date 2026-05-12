@@ -111,3 +111,91 @@ col2.metric('Total orders', df['InvoiceNo'].nunique())
 # Total customers
 col3.metric('Total customers', df['CustomerID'].nunique())
 
+# sales trends
+
+st.subheader('Sales trends')
+
+# what groupy() does:
+# - splits data into groups
+# - apply operations into each group
+# - combine results
+# So, split → apply → combine
+
+# | Country | Revenue |
+# | ------- | ------- |
+# | India   | 100     |
+# | India   | 200     |
+# | USA     | 300     |
+# | USA     | 150     |     (eg. data)
+
+# df.groupby('Country')
+
+# You'll just get a DataFrameGroupBy object like
+# India → [0, 1]
+# USA   → [1, 2]
+# No values yet; just the row indexes/row positions that stay true to each group
+# actual: <pandas.core.groupby.generic.DataFrameGroupBy object at 0x000001F4A92B7FD0>
+# two groups for each unique 'Country' column/group
+
+# so:
+# India_group = rows [0, 1], which is actually
+# | index | Country | Revenue |
+# | ----- | ------- | ------- |
+# | 0     | India   | 100     |
+# | 1     | India   | 200     |
+
+# USA_group = rows [1, 2], which is actually
+# | index | Country | Revenue |
+# | ----- | ------- | ------- |
+# | 2     | USA     | 300     |
+# | 3     | USA     | 150     |
+
+
+# this is the first step of mental model; split
+
+# Now, you have to apply an operation
+# df.groupby('Country')['Revenue'].sum()
+
+# this is basically;
+# India_group['revenue']
+# and
+# USA_group['revenue']
+
+# So, you get:
+
+# India_group
+# | Revenue |
+# | ------- |
+# | 100     |
+# | 200     |
+
+# USA_group
+# | Revenue |
+# | ------- |
+# | 300     |
+# | 150     |
+
+# NOTE: They are still seperately done for each group; the column indexing
+
+# and applying sum
+
+# India_group
+# | 300     |
+
+
+# USA_group
+# | 450     |
+
+# finally, combine to get daily_sales (below) equal to this
+
+# # | Country | Revenue |
+# | ------- | ------- |
+# | India   | 300     |
+# | USA     | 450     |
+
+
+daily_sales = df.groupby('InvoiceData')['Revenue'].sum()
+
+# NOTE: daily_sales here is a Series; an index column and values alongside it
+# like a 1D array but with indices, that's it.
+
