@@ -241,7 +241,7 @@ st.subheader('Sales trends')
 # So, DataFrame (df) -> GroupByDataFrame (df.grouped('Country')) -> GroupBySeries 
 # (df.grouped('Country')['Revenue']) -> Series (df.grouped('Country')['Revenue'].sum())
 
-daily_sales = df.groupby('InvoiceData')['Revenue'].sum()
+daily_sales = df.groupby('InvoiceDate')['TotalPrice'].sum()
 
 # NOTE: daily_sales here is a Series; an index column and values alongside it
 # like a 1D array but with indices, that's it.
@@ -277,7 +277,7 @@ st.pyplot(fig2)
 # latest date
 snap_date = df['InvoiceDate'].max()
 
-rfm = df.groupby('Customer ID').agg({
+rfm = df.groupby('CustomerID').agg({
     'InvoiceDate': lambda x: (snap_date - x.max()).days,
     'InvoiceNo':'count',
     'TotalPrice':'sum'
@@ -328,3 +328,41 @@ sns.scatterplot(x='Recency', y='Monetary', hue='Cluster', data=rfm)
 
 # see
 st.pyplot(fig3)
+
+# demand forecasting
+
+st.subheader('Demand forecast (next 30 days)')
+
+daily_sales_df = df.groupby('InvoiceDate')['TotalPrice'].sum().reset_index()
+daily_sales_df.columns = ['Sales', 'y = total price']
+
+model = Prophet()
+# Prophet, by Meta, is a forecasting engine
+# designed to detect: trends (sales going up/down), seasonality (weekly/monthly/patterns),
+# noise (random fluctuations)
+
+model.fit(daily_sales_df)
+# studies/prepares data
+# - are sales increasing over time?
+# - do weekends have higher sales?
+# - is there a repeating pattern every month
+
+# it decomposes the the time series into trend + seasonanality + noise
+
+future = model.make_future_dataframe(periods=30)
+
+# 30 future dates where we predict/forecast demand
+
+forecast = model.predict(future)
+
+# output is something like:
+# | ds    |            yhat | yhat_lower | yhat_upper |
+# | ----- | --------------: | ---------: | ---------: |
+# | Jan 1 |             300 |        ... |        ... |
+# | Jan 2 |             150 |        ... |        ... |
+# | Jan 3 |             180 |        ... |        ... |
+
+# confidence intervals
+# - yhat_lower; worst case estimate
+# - yhat_upper;- best-case estimate
+
