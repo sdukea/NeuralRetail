@@ -312,3 +312,18 @@ rfm = df.groupby('Customer ID').agg({
 
 rfm.columns = ['Recency', 'Frequency', 'Monetary']
 
+scaler = StandardScaler()
+
+# scale data to a similar range to make all these measures comparable
+rfm_scaled = scaler.fit_transform(rfm)
+
+# 4 clusters
+kmeans = KMeans(n_clusters=4)
+
+rfm['Cluster'] = kmeans.fit_predict(rfm_scaled)
+# assign, for each customer alongside their recency, frequency and monetary, their cluster (out of the 4)
+
+fig3 = plt.figure()
+sns.scatterplot(x='Recency', y='Monetary', hue='Cluster', data=rfm)
+
+st.pyplot(fig3)
