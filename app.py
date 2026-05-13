@@ -265,3 +265,50 @@ fig2 = plt.figure()
 top_products.plot(kind='bar')
 st.pyplot(fig2)
 
+# customer segmentation
+
+# specifically: RFM customer segmentation
+# R - recency, F - frequency, M - monetary
+# we want to segment customers based on these
+# 1. the most recent customers
+# 2. the most frequent customers
+# 3. the most high paying customers
+
+# latest date
+snap_date = df['InvoiceDate'].max()
+
+rfm = df.groupby('Customer ID').agg({
+    'InvoiceDate': lambda x: (snap_date - x.max()).days,
+    'InvoiceNo':'count',
+    'TotalPrice':'sum'
+})
+
+# from the GroupByDF, consisting of dataframes for each group and their instances/rows and all columns/
+# column values associated
+# for each group now, only have three columns (leave the rest)
+# and for each column, transform data accordingly (count, mean, etc)
+# that's what .agg() does
+# NOTE: the columns you will need will SHOULD EXACTLY MIRROR the names of the columns in main data
+
+# all other columns will NOT be included for each row/instance of group; only 'InvoiceDate' column,
+# 'InvoiceNo' column and 'TotalPrice' column will be associated for each group and instances
+
+# NOTE: rfm turns into a DataFrame after you do .agg() and will look like
+# | CustomerID | InvoiceDate | InvoiceNo | TotalPrice |
+# | ---------- | ----------: | --------: | ---------: |
+# | 101        |          12 |         3 |        500 |
+# | 102        |          90 |         1 |         50 |
+# | 103        |           5 |         8 |       1200 |
+
+# why aggregate?
+# because we need data (as a 2D matrix/dataframe) where for each customer (customer segmentation, of 
+# course we need customers), we need their
+# recency measure; captured by InvoiceDate
+# frequency measure; captured by InvoiceNo
+# monetary measure; captured by TotalPrice
+
+# grouped by customer –> becomes GBDF
+# aggregate it -> becomes DF again like the one you see above; a normal Pandas DataFrame
+
+rfm.columns = ['Recency', 'Frequency', 'Monetary']
+
