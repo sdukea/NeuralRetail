@@ -236,8 +236,28 @@ st.subheader('Top Products')
 
 # and for each group, sum the TotalPrice values
 
-# now, NOTE: for all groups i.e. the GroupByDataFrame (the entire DataFrame of groups with now
-# having one summed TotalPrice value for each group) there are with one summed TotalPrice value for each,
+# now, NOTE: for all groups i.e. the Pandas Series of product groups and associated summed TotalPrice value 
+# for each,
+# NOTE: It is a GroupByDataFrame until df.groupby('Description')['TotalPrice']
+# - rows of each group and their multiple instances
+# - with a column that associates 'TotalPrice' for the product groups and each group instance
+# Once you did df.groupby('Description')['TotalPrice'].sum(), it turns into a Series because instances
+# of each group and associated 'TotalPrice' for each is summed up
+# So you only need:
+# Group1 - Summed Value
+# Group2 - Summed Value
+# Group3 - Summed Value
+# (index)    (values)
+# So, its a Series
+# |
+# The DataFrame would've looked like
+# Group1 - Value
+# Group1 - Value
+# Group1 - Value
+# Group2 - Value
+# Group3 - Value
+# Group3 - Value
+# 3 instances of group 1, 1 instances of group 2 and 2 instances of group 3 (example)
 
 # sort them in a descending order (highest first)
 
@@ -246,3 +266,6 @@ st.subheader('Top Products')
 
 top_products = df.groupby('Description')['TotalPrice'].sum().sort_values(ascending=False).head(10)
 
+fig2 = plt.figure()
+
+top_products.plot()
