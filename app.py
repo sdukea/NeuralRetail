@@ -385,4 +385,20 @@ print(last_purchase)
 # consists of many Pandas Series
 # because for each group/customer ID and multiple instances for it, there exists only 1 associated value 
 # of 'InvoiceDate', not multiple
+# and so index becomes customer ID and then values are invoice dates; hence a Series format and turned
+# into a Series itself
+
+churn = (snap_date - last_purchase).dt.days > 90
+
+# snap_date - last_purchase –> computes time difference from snapshot date (date we're considering from
+# for recency)
+# .dt.days -> only extracts number of days
+# > 90 -> checks if customer has been inactive for more than 90 days
+
+churn_df = churn.reset_index()
+
+churn_df.columns = ['CustomerID', 'Churn']
+
+st.write(churn_df.head())
+# gets top 10
 
