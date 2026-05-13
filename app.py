@@ -383,5 +383,6 @@ print(last_purchase)
 
 # NOTE: here, df.groupby('CustomerID')['InvoiceDate'] is just a Series, not a GroupBySeries which
 # consists of many Pandas Series
-# because for each group/customer ID, there exists only 1 associated value of 'InvoiceDate', not
-# multiple
+# because for each group/customer ID and multiple instances for it, there exists only 1 associated value 
+# of 'InvoiceDate', not multiple
+
