@@ -334,7 +334,7 @@ st.pyplot(fig3)
 st.subheader('Demand forecast (next 30 days)')
 
 daily_sales_df = df.groupby('InvoiceDate')['TotalPrice'].sum().reset_index()
-daily_sales_df.columns = ['Sales', 'y = total price']
+daily_sales_df.columns = ['ds', 'y']
 
 model = Prophet()
 # Prophet, by Meta, is a forecasting engine
