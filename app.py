@@ -326,4 +326,5 @@ rfm['Cluster'] = kmeans.fit_predict(rfm_scaled)
 fig3 = plt.figure()
 sns.scatterplot(x='Recency', y='Monetary', hue='Cluster', data=rfm)
 
+# see
 st.pyplot(fig3)
