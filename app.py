@@ -412,3 +412,10 @@ stock = forecast_30['yhat'].sum()
 
 st.metric('Recommended Stock (next 30 days)', f"{stock:,.0f}")
 
+# let downloads
+
+st.download_button(
+    "Download Processed Data",
+    df.to_csv(index=False),
+    file_name="processed_data.csv"
+)
