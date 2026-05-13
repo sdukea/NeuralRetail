@@ -132,71 +132,114 @@ st.subheader('Sales trends')
 # | USA     | 300     |
 # | USA     | 150     |     (eg. data)
 
-# df.groupby('Country')
+# grouped = df.groupby('Country')
 
 # You'll just get a DataFrameGroupBy object like
 # India → [0, 1]
 # USA   → [1, 2]
+# you can see groups by doing grouped.groups
 # No values yet; just the row indexes/row positions that stay true to each group
 # actual: <pandas.core.groupby.generic.DataFrameGroupBy object at 0x000001F4A92B7FD0>
-# two groups for each unique 'Country' column/group
+# two groups; 2 unique 'Country' column/group
+# NOTE: df is a DataFrame; grouped is not a DataFrame but a GroupByDataFrame
+# its not actual copied tables; just mapping as you see above
+# if you print grouped.groups, you'll see something like:
+# {
+#     'India': [0, 1],
+#     'USA': [1, 2]
+# }
+# so you store group name (uniqe from 'Country') and row indices/rows
+# |
+# if you did:
+# for name, group in grouped:
+#   print(name)
+#   print(grouped)
 
-# so:
-# India_group = rows [0, 1], which is actually
-# | index | Country | Revenue |
-# | ----- | ------- | ------- |
-# | 0     | India   | 100     |
-# | 1     | India   | 200     |
+# this is the output:
+# India
+#   Country  Revenue
+# 0   India      100
+# 1   India      200
 
-# USA_group = rows [1, 2], which is actually
-# | index | Country | Revenue |
-# | ----- | ------- | ------- |
-# | 2     | USA     | 300     |
-# | 3     | USA     | 150     |
+# USA
+#   Country  Revenue
+# 2     USA      300
+# 3     USA      150
 
+# So a GroupByDataFrame (grouped) = multiple smaller dataframes grouped together
+# these two DataFrames entirely are what 'grouped', the GroupByDataFrame stores
+# So,
+# India (-> rows) -> dataframe (consisting of instances of group (rows) and all columns/values for each) 
+# USA   (-> rows) -> dataframe (consisting of instances of group (rows) and all columns/values for each)
 
 # this is the first step of mental model; split
 
 # Now, you have to apply an operation
-# df.groupby('Country')['Revenue'].sum()
+# rev_grouped = df.groupby('Country')['Revenue']
 
-# this is basically;
-# India_group['revenue']
-# and
-# USA_group['revenue']
+# Now, this creates a GroupBySeries now.
+# why: because 'grouped' = df.groupby('Country')' is a GroupByDataFrame consisting of multiple data
+# frames of groups (each dataframe making up GBDF has multiple rows/instances as you know it)
+# and when you index by 'Revenue' column alone, this is what happens:
+# India -> rows -> only 'Revenue' column values
+# USA -> rows -> only 'Reveneue' column values
 
-# So, you get:
+# So, from
 
-# India_group
-# | Revenue |
-# | ------- |
-# | 100     |
-# | 200     |
+# India
+#   Country  Revenue
+# 0   India      100
+# 1   India      200
 
-# USA_group
-# | Revenue |
-# | ------- |
-# | 300     |
-# | 150     |
+# USA
+#   Country  Revenue
+# 2     USA      300
+# 3     USA      150
 
-# NOTE: They are still seperately done for each group; the column indexing
+# it turns into:
+# for name, group in revenue_grouped:
+#   print(name)
+#   print(group)
+# |
+# India
+# 0    100
+# 1    200
 
-# and applying sum
+# USA
+# 2    300
+# 3    150
 
-# India_group
-# | 300     |
+# And so a GroupBySeries consists of multiple Series inside it
+# so, this is what happens when you go on to do:
+# df.groupby('Country')['Revenue']
 
+# NOTE: df.groupby('Country') -> each group in 'grouped' had DataFrame (grouped = GroupByDataFrame)
+# Now, df.groupby('Country')['Revenue'] -> each group in 'rev_grouped' has Series
+# (rev_grouped = GroupBySeries)
 
-# USA_group
-# | 450     |
+# now, you can SUM/APPLY OPERATION on a GroupBySeries just like a Series (applies op to every Series
+# inside GBS)
+# So, .sum() sums values for each Series in GroupBySeries
 
-# finally, combine to get daily_sales (below) equal to this
+# rev_grouped_sum = df.groupby('Country')['Revenue'].sum()
 
-# # | Country | Revenue |
-# | ------- | ------- |
-# | India   | 300     |
-# | USA     | 450     |
+# This turns it into a normal Pandas Series now
+# why: because a GroupBySeries, which consisted of Series per each group in it (1D array with index and 
+# multiple values 'TotalPrice' in it)
+# now only consists of ONE VALUE per each group
+# so, it isn't a Series anymore; its been converted into a single value by summing all Series 'TotalPrice'
+# values.
+# |
+# So, a GroupBySeries, which should consists of multiple Series (for each group) now only consists
+# of values; so a GroupBySeries does not tick anymore
+# hence, the only Pandas datatype that holds values (0D/summed values for each group/Series) in it is a 
+# normal Series itself, with index 
+# |
+# So, rev_grouped_sum is now a Series where groups are indices and summed values of each group Series
+# (from rev_grouped GroupBySeries) are associated to each of this group index in this normal Series now
 
+# So, DataFrame (df) -> GroupByDataFrame (df.grouped('Country')) -> GroupBySeries 
+# (df.grouped('Country')['Revenue']) -> Series (df.grouped('Country')['Revenue'].sum())
 
 daily_sales = df.groupby('InvoiceData')['Revenue'].sum()
 
@@ -218,51 +261,7 @@ st.pyplot(fig1)
 st.subheader('Top Products')
 
 # the groupby –
-# split to groups by 'Description':
-# 1. IVORY KNITTED MUG COSY 
-# - has total price for this
-# 2. White metal lantern
-# - has total price for this
 
-# and so on for each group split with its total price
-# NOTE: each group has multiple instances of it
-# so you'll see 10 White metal lantern rows, 4 ivory knitted mug cosy rows and so on
-# so 10 TotalPrice values for White metal lantern and 4 TotalPrice values for ivory knitted mug cosy
-# and so on for each group and their instances (and its TotalPrice alongside as that's our split index)
-# so for one group; white metal lantern rows, you see 10 rows of TotalPrice values and for one group
-# ivory knitted mug cosy, you see 4 rows of TotalPrice
-
-# for each group, sum their TotalPrice values (by the instances there are)
-
-# and for each group, sum the TotalPrice values
-
-# now, NOTE: for all groups i.e. the Pandas Series of product groups and associated summed TotalPrice value 
-# for each,
-# NOTE: It is a GroupByDataFrame until df.groupby('Description')['TotalPrice']
-# - rows of each group and their multiple instances
-# - with a column that associates 'TotalPrice' for the product groups and each group instance
-# Once you did df.groupby('Description')['TotalPrice'].sum(), it turns into a Series because instances
-# of each group and associated 'TotalPrice' for each is summed up
-# So you only need:
-# Group1 - Summed Value
-# Group2 - Summed Value
-# Group3 - Summed Value
-# (index)    (values)
-# So, its a Series
-# |
-# The DataFrame would've looked like
-# Group1 - Value
-# Group1 - Value
-# Group1 - Value
-# Group2 - Value
-# Group3 - Value
-# Group3 - Value
-# 3 instances of group 1, 1 instances of group 2 and 2 instances of group 3 (example)
-
-# sort them in a descending order (highest first)
-
-# and then in this GroupByDataFrame, only give the top 10 rows/groups i.e. 10 product groups with the
-# highest 'TotalPrice'
 
 top_products = df.groupby('Description')['TotalPrice'].sum().sort_values(ascending=False).head(10)
 
