@@ -410,3 +410,5 @@ forecast_30 = forecast[['ds', 'yhat']].tail(30)
 
 stock = forecast_30['yhat'].sum()
 
+st.metric('Recommended Stock (next 30 days)', f"{stock:,.0f}")
+
