@@ -1,8 +1,12 @@
-# web app foundations
 import streamlit as st
-
-# data
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from prophet import Prophet
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from xgboost import XGBClassifier
 
 st.set_page_config(page_title='NeuralRetail – Welcome', layout='wide')
 
@@ -198,4 +202,47 @@ daily_sales = df.groupby('InvoiceData')['Revenue'].sum()
 
 # NOTE: daily_sales here is a Series; an index column and values alongside it
 # like a 1D array but with indices, that's it.
+
+fig1 = plt.figure()
+daily_sales.plot()
+# plot a Series this way, using the inner Matplotlib functionality in Pandas
+# the index in Series – x-axis
+# the values in Series – y-axis
+
+plt.xlabel('Date')
+plt.ylabel('Revenue')
+st.pyplot(fig1)
+
+# top products
+
+st.subheader('Top Products')
+
+# the groupby –
+# split to groups by 'Description':
+# 1. IVORY KNITTED MUG COSY 
+# - has total price for this
+# 2. White metal lantern
+# - has total price for this
+
+# and so on for each group split with its total price
+# NOTE: each group has multiple instances of it
+# so you'll see 10 White metal lantern rows, 4 ivory knitted mug cosy rows and so on
+# so 10 TotalPrice values for White metal lantern and 4 TotalPrice values for ivory knitted mug cosy
+# and so on for each group and their instances (and its TotalPrice alongside as that's our split index)
+# so for one group; white metal lantern rows, you see 10 rows of TotalPrice values and for one group
+# ivory knitted mug cosy, you see 4 rows of TotalPrice
+
+# for each group, sum their TotalPrice values (by the instances there are)
+
+# and for each group, sum the TotalPrice values
+
+# now, NOTE: for all groups i.e. the GroupByDataFrame (the entire DataFrame of groups with now
+# having one summed TotalPrice value for each group) there are with one summed TotalPrice value for each,
+
+# sort them in a descending order (highest first)
+
+# and then in this GroupByDataFrame, only give the top 10 rows/groups i.e. 10 product groups with the
+# highest 'TotalPrice'
+
+top_products = df.groupby('Description')['TotalPrice'].sum().sort_values(ascending=False).head(10)
 
