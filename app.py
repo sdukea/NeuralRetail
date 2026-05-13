@@ -117,7 +117,7 @@ col3.metric('Total customers', df['CustomerID'].nunique())
 
 # sales trends
 
-st.subheader('Sales trends')
+st.subheader('Sales Trends')
 
 # what groupy() does:
 # - splits data into groups
@@ -331,7 +331,7 @@ st.pyplot(fig3)
 
 # demand forecasting
 
-st.subheader('Demand forecast (next 30 days)')
+st.subheader('Demand Forecast (next 30 days)')
 
 daily_sales_df = df.groupby('InvoiceDate')['TotalPrice'].sum().reset_index()
 daily_sales_df.columns = ['ds', 'y']
@@ -401,4 +401,12 @@ churn_df.columns = ['CustomerID', 'Churn']
 
 st.write(churn_df.head())
 # gets top 10
+
+# inventory recommendation
+
+st.subheader('Inventory Recommendation')
+
+forecast_30 = forecast[['ds', 'yhat']].tail(30)
+
+stock = forecast_30['yhat'].sum()
 
