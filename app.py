@@ -366,3 +366,9 @@ forecast = model.predict(future)
 # - yhat_lower; worst case estimate
 # - yhat_upper;- best-case estimate
 
+fig4 = model.plot(forecast)
+
+# creates: black dots/lines - actual past sales | blue line - prediction sales trend
+# shaded region - uncertainty region
+
+st.pyplot(fig4)
