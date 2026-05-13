@@ -248,7 +248,7 @@ daily_sales = df.groupby('InvoiceData')['Revenue'].sum()
 
 fig1 = plt.figure()
 daily_sales.plot()
-# plot a Series this way, using the inner Matplotlib functionality in Pandas
+# plot the Series daily_sales this way, using the inner Matplotlib functionality in Pandas
 # the index in Series – x-axis
 # the values in Series – y-axis
 
@@ -260,11 +260,8 @@ st.pyplot(fig1)
 
 st.subheader('Top Products')
 
-# the groupby –
-
-
 top_products = df.groupby('Description')['TotalPrice'].sum().sort_values(ascending=False).head(10)
-
 fig2 = plt.figure()
+top_products.plot(kind='bar')
+st.pyplot(fig2)
 
-top_products.plot()
