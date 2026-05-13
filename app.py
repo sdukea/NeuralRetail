@@ -372,3 +372,16 @@ fig4 = model.plot(forecast)
 # shaded region - uncertainty region
 
 st.pyplot(fig4)
+
+# churn prediction
+
+st.subheader('Churn Prediction')
+
+last_purchase = df.groupby('CustomerID')['InvoiceDate'].max()
+
+print(last_purchase)
+
+# NOTE: here, df.groupby('CustomerID')['InvoiceDate'] is just a Series, not a GroupBySeries which
+# consists of many Pandas Series
+# because for each group/customer ID, there exists only 1 associated value of 'InvoiceDate', not
+# multiple
